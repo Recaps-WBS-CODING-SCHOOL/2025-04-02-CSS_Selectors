@@ -1,0 +1,304 @@
+/* Recap Content */
+
+/* 
+  Toggling Menu
+*/
+
+/* Re-style the mobile menu, when the hamburger menu button is clicked */
+.menu-btn:has(#menu-trigger:checked) + .mobile-menu {
+  width: auto; /* Animating to size auto is new in css - see interpolate-size */
+  border: 2px solid var(--primary-color);
+  transition: width 250ms ease-in-out;
+}
+
+/* :has() can look down the whole DOM tree, if necessary */
+/* be careful with that, could have performance implications */
+/* body:has(#menu-trigger:checked) .mobile-menu {
+  right: 0;
+} */
+
+/* html:has(#menu-trigger:checked) {
+  color-scheme: dark;
+} */
+
+/* 
+Menu Button
+*/
+
+/* making the Checkbox invisible, but still focusable by keyboard */
+.menu-btn input {
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  overflow: hidden;
+  position: absolute;
+}
+
+/* add a focus ring on hamburger menu, when checkbox is tabbed into */
+.menu-btn:has(:focus-visible) {
+  outline: 3px solid Highlight;
+  outline-offset: 3px;
+}
+
+/* 
+  Menu Icon
+*/
+/* using pseudo-elements to create top and bottom bar of hamburger menu */
+.menu-icon::before,
+.menu-icon::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 7%;
+  background-color: var(--color);
+  transform-origin: right;
+  transition: all 200ms ease-in-out;
+}
+
+/* transition from hamburger to X when clicked */
+[type='checkbox']:checked + .menu-icon {
+  background: transparent;
+  transition-delay: 0ms;
+
+  &::after {
+    rotate: 45deg;
+    translate: -4px 0;
+  }
+  &::before {
+    translate: -4px 0;
+    rotate: -45deg;
+  }
+}
+
+/* 
+  Form Control
+*/
+/*  Moving label on focus */
+/* Re-style label (move up), when input next to it is focused OR has user input (then the placeholder isn't shown) */
+
+label:has(+ input:focus-visible),
+label:has(+ input:not(:placeholder-shown)) {
+  top: -8px;
+  margin-inline-start: 1ch;
+  padding-inline-start: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: currentColor;
+}
+
+/*  Coloring inputs on valid/invalid  */
+/* Pain input red, when the user typed in invalid stuff, not matching attibutes like 'required', 'minlength', 'pattern' and so on */
+input:user-invalid:not(:focus) {
+  color: red;
+  border-color: red;
+  outline: 3px solid red;
+}
+
+input:user-valid:not(:focus) {
+  border-color: green;
+  outline: 3px solid green;
+}
+
+/* Re-color label, when the adjacent input is invalid or not */
+label:has(+ input:user-invalid:not(:focus)) {
+  color: red;
+}
+label:has(+ input:user-valid) {
+  color: green;
+}
+
+/* 
+  Link List
+*/
+/*  Emphasize hovered element  */
+
+li:hover {
+  scale: 1.2;
+  transform: translateX(-1em);
+}
+
+/* Tone down not hovered elements */
+
+li:hover ~ li,
+li:has(~ li:hover) {
+  scale: 0.9;
+  color: hsl(from currentColor h s calc(l * 0.5) / 50%);
+
+  a::after {
+    filter: grayscale(1) contrast(1.5);
+  }
+}
+
+li:hover + li,
+li:has(+ li:hover) {
+  scale: 1;
+}
+
+/* 
+  Decorational Pseudo Elements on the Links
+*/
+
+li:nth-of-type(1) a::after {
+  content: '🏡';
+  content: attr(data-icon);
+}
+
+li:nth-of-type(2) a::after {
+  content: '🪙';
+}
+
+li:nth-of-type(3) a::after {
+  content: '🐲';
+}
+
+li:nth-of-type(4) a::after {
+  content: '🥡';
+}
+li:nth-of-type(5) a::after {
+  content: '🐼';
+}
+li:nth-of-type(6) a::after {
+  content: '🐧';
+}
+li:nth-of-type(7) a::after {
+  content: '🪅';
+}
+
+/* In daisyUI, you can put a 'data-theme' attribute on any elment to change the color theming. Basically it works like this: you reset CSS custom properties defining your colors with an attribute selector that looks for your particular theme */
+/* [data-theme='cyberpunk'] {
+  --primary-color: #fff248;
+} */
+
+/* Other stuff - have a look at it, if you like */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+    'Helvetica Neue', sans-serif;
+  interpolate-size: allow-keywords;
+}
+
+body {
+  background-color: rgb(32, 32, 32);
+}
+
+header {
+  display: flex;
+  justify-content: end;
+  position: relative;
+}
+
+.menu-btn {
+  width: 2rem;
+  aspect-ratio: 1 / 0.75;
+  display: block;
+  margin: 2rem;
+  cursor: pointer;
+}
+
+.menu-icon {
+  --color: #fff;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(transparent, transparent 46%, var(--color) 46%, var(--color) 53%, transparent 53%);
+  transition: background 200ms 100ms ease-in-out;
+  transition-behavior: allow-discrete;
+}
+
+.mobile-menu {
+  --primary-color: hsl(0, 0%, 88%);
+  --primary-color: orange;
+  position: absolute;
+  top: 5rem;
+  overflow: hidden;
+  width: 0;
+  border: none;
+  border-radius: 5px 0 0 5px;
+  background-color: hsl(from var(--primary-color) h s l / 80%);
+  transition: width 250ms ease-in-out, border 0ms 250ms;
+  transition-behavior: allow-discrete;
+}
+
+.mobile-menu h2 {
+  text-align: end;
+  margin-block: 0.75rem;
+}
+
+.mobile-menu hr {
+  border-color: var(--primary-color);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-inline: 0.5rem;
+  margin-block: 0.75rem;
+}
+
+.form-control {
+  position: relative;
+
+  label {
+    position: absolute;
+    top: 50%;
+    padding-inline-start: calc(1ch + 0.75rem);
+    translate: 0 -50%;
+    color: hsl(from currentColor h 10% l / 60%);
+    transition: all 200ms ease-in-out;
+    transition-property: top, padding, font-size, font-weight, color;
+  }
+
+  input {
+    padding: 0.75rem 1.25rem;
+    border-radius: 5px;
+    font: inherit;
+    color: inherit;
+
+    &::placeholder {
+      color: transparent;
+    }
+
+    &:focus {
+      outline: 2px solid #fff;
+    }
+  }
+}
+
+.login-form button {
+  padding: 0.75rem 1.25rem;
+  border-radius: 5px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.mobile-menu {
+  ul {
+    list-style: none;
+    text-align: end;
+    margin-inline: 0.5rem;
+    margin-block: 0.75rem;
+    line-height: 2;
+    font-size: 1.25em;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  li {
+    transition: all 100ms ease;
+  }
+}
